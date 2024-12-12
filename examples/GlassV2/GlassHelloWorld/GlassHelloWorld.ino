@@ -58,7 +58,7 @@ void setup()
 
 
 
-    lv_obj_t *label = lv_label_create(window);        /*Add a label the current screen*/
+    lv_obj_t *label = lv_label_create(w indow);        /*Add a label the current screen*/
     lv_label_set_text(label, "Hello World");          /*Set label text*/
     lv_obj_center(label);                             /*Set center alignment*/
 
