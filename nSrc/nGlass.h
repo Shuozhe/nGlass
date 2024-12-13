@@ -4,7 +4,7 @@
 #include <Wire.h>
 #include <LilyGo_Wristband.h>
 #include <LV_Helper.h>
-#include <demos/widgets/lv_demo_widgets.h>
+#include <demos/lv_demos.h>
 
 #define GLASS_VIEWABLE_WIDTH 126
 #define GLASS_VIEWABLE_HEIGHT 126
