@@ -40,10 +40,6 @@ public:
     Serial.println("");
     // disable WiFi power saving for speed
     Serial.println("WiFi connected");
-    NetworkChannelData *channelData = new NetworkChannelData(CHANNEL_INFO_URL, FRAME_URL);
-    NetworkVideoSource *videoSource = new NetworkVideoSource((NetworkChannelData *) channelData);
-    Display *displayAdapter = new LilyDisplayAdpater(&lily);
-    mVideoPlayer = new VideoPlayer(channelData, videoSource, displayAdapter);
   }
 
   void init()
@@ -71,12 +67,17 @@ public:
     lv_obj_set_style_border_width(window, 3, 0);
     lv_obj_set_size(window, GLASS_VIEWABLE_WIDTH, GLASS_VIEWABLE_HEIGHT);
     lv_obj_align(window, LV_ALIGN_BOTTOM_MID, 0, 0);
+
+    NetworkChannelData *channelData = new NetworkChannelData(CHANNEL_INFO_URL, FRAME_URL);
+    NetworkVideoSource *videoSource = new NetworkVideoSource((NetworkChannelData *) channelData);
+    Display *display = new LilyDisplayAdpater(window);
+    mVideoPlayer = new VideoPlayer(channelData, videoSource, display);
+
+    display->drawJpg(NULL);
   }
 
   void tick()
   {
-    
-
     lily.update();
     lv_timer_handler();
     delay(1);

@@ -89,7 +89,7 @@ int dmaBufferIndex = 0;
 int _doDraw(JPEGDRAW *pDraw)
 {
   VideoPlayer *player = (VideoPlayer *)pDraw->pUser;
-  player->mDisplay->drawPixels(pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight, pDraw->pPixels);
+  player->mDisplay->drawJpg(pDraw->pPixels);
   return 1;
 }
 
@@ -125,23 +125,23 @@ void VideoPlayer::framePlayerTask()
     {
       // draw random pixels to the screen to simulate static
       // we'll do this 8 rows of pixels at a time to save RAM
-      int width = mDisplay->width();
+      // TODO
+      int width = 126;
       int height = 8;
       if (staticBuffer == NULL)
       {
         staticBuffer = (uint16_t *)malloc(width * height * 2);
       }
-      mDisplay->startWrite();
-      for (int i = 0; i < mDisplay->height(); i++)
+      for (int i = 0; i < 16; i++)
       {
         for (int p = 0; p < width * height; p++)
         {
           int grey = xorshift16() >> 8;
           staticBuffer[p] = mDisplay->color565(grey, grey, grey);
         }
-        mDisplay->drawPixels(0, i * height, width, height, staticBuffer);
       }
-      mDisplay->endWrite();
+      // TODO
+      mDisplay->drawJpg(staticBuffer);
       vTaskDelay(50 / portTICK_PERIOD_MS);
       continue;
     }
@@ -157,15 +157,10 @@ void VideoPlayer::framePlayerTask()
     while(frameTimes.size() > 0 && frameTimes.back() - frameTimes.front() > 5000) {
       frameTimes.pop_front();
     }
-    mDisplay->startWrite();
     if (mJpeg.openRAM(jpegBuffer, jpegLength, _doDraw))
     {
       mJpeg.setUserPointer(this);
-      #ifdef LED_MATRIX
-      mJpeg.setPixelType(RGB565_LITTLE_ENDIAN);
-      #else
       mJpeg.setPixelType(RGB565_BIG_ENDIAN);
-      #endif
       mJpeg.decode(0, 0, 0);
       mJpeg.close();
     }
@@ -176,6 +171,5 @@ void VideoPlayer::framePlayerTask()
     #if CORE_DEBUG_LEVEL > 0
     mDisplay->drawFPS(frameTimes.size() / 5);
     #endif
-    mDisplay->endWrite();
   }
 }
